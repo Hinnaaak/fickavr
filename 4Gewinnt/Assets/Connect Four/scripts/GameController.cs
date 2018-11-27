@@ -1,0 +1,218 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameController : MonoBehaviour {
+
+    public enum Player
+    {
+        Empty = 0,
+        Yellow = 1,
+        Red = 2
+    }
+
+    public GameObject redCoin;
+    public GameObject yellowCoin;
+    public GameObject currentCoin;
+
+    public int row = 6;
+    public int col = 7;
+    public int[,] field;
+
+    public bool isDropping;
+    public Player turn;
+
+    public float speed = 30f;
+
+    private Vector3 endPosition;
+    public bool isLocked;
+    public Player winner;
+
+    // Use this for initialization
+    void Start () {
+        field = new int[col, row];
+        turn = Player.Red;
+        winner = Player.Empty;
+        CreateNewCoin();
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (!isDropping && !isLocked && currentCoin != null)
+        {
+            isLocked = true;
+            Vector3 moveFor = new Vector3(0, 0, 0);
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && currentCoin.transform.position.z < 7.5)
+            {
+                moveFor = new Vector3(0, 0, 2.5f);
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightArrow) && currentCoin.transform.position.z > -7.5)
+            {
+                moveFor = new Vector3(0, 0, -2.5f);
+            }
+            currentCoin.transform.position += moveFor;
+            //Input.GetKeyDown(KeyCode.DownArrow) || 
+            if (Input.GetButton("Fire1"))
+            {
+                DropCoin();
+            }
+            isLocked = false;
+        }
+        else if(isDropping)
+        {
+            Vector3 move = new Vector3(0, -0.75f, 0) * Time.deltaTime * speed;
+            if (currentCoin.transform.position.y > endPosition.y){
+                if((move + currentCoin.transform.position).y >= endPosition.y)
+                    currentCoin.transform.Translate(move, Space.World);
+                else
+                    currentCoin.transform.Translate(new Vector3(0, endPosition.y - currentCoin.transform.position.y, 0), Space.World);
+            }else{
+                isDropping = false;
+                turn = turn == Player.Red ? Player.Yellow : Player.Red;
+                CheckForWinner();
+                currentCoin = null;
+                if(winner == Player.Empty && HasEmptyCell())
+                    CreateNewCoin();
+            }
+        }
+
+    }
+
+    void CreateNewCoin(){
+        //Vector3 spawnPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        GameObject g = Instantiate(
+            turn == Player.Red ? redCoin : yellowCoin , // is players turn = spawn blue, else spawn red
+            new Vector3(0, 17, 0), // spawn it above the first row
+            Quaternion.Euler(new Vector3(0, 0, 90)));
+        currentCoin = g;
+    }
+
+    private int GetCol(){
+           return (int)Mathf.Floor(currentCoin.transform.position.z / -2.5f) + 3;
+    }
+
+    private void DropCoin(){
+        isDropping = true;
+
+        Vector3 startPosition = currentCoin.transform.position;
+        endPosition = new Vector3(0, 1.5f, 0);
+
+        // is there a free cell in the selected column?
+        bool foundFreeCell = false;
+        for (int i = row - 1; i >= 0; i--){
+            if (field[GetCol(), i] == 0){
+                foundFreeCell = true;
+                endPosition += new Vector3(0, 2.5f, 0)*(row -1- i);
+                field[GetCol(), i] = (int)turn;
+                break;
+            }
+
+        }
+        if (foundFreeCell){
+            currentCoin.transform.Translate(Vector3.down * Time.deltaTime * speed, Space.World);
+        }else
+            isDropping = false;
+    }
+
+    private void CheckForWinner(){
+        for (int i = row - 1; i >= 0; i--){
+            for (int j = col - 1; j >= 0; j-- ){
+                if(field[j,i] != (int)Player.Empty){
+                    int owner = field[j, i];
+
+                    //Check 4 from down to top
+                    int count = 0;
+                    for (int x = i; x > i-4; x--){
+                        if (IsInField(j,x) && field[j, x] == owner)
+                        {
+                            count++;
+                        }else{
+                            count = 0;
+                            break;
+                        }
+                    }
+                    if (count == 4){
+                        Debug.Log("4 in einer reihe down-top");
+                        winner = (Player)owner;
+                        return;
+                    }
+
+                    //check 4 from right to left
+                    for (int x = j; x > j-4 ; x--)
+                    {
+                        if (IsInField(x,i) && field[x, i] == owner)
+                            count++;
+                        else
+                        {
+                            count = 0;
+                            break;
+                        }
+                    }
+                    if (count == 4)
+                    {
+                        Debug.Log("4 in einer reihe right-left");
+                        winner = (Player)owner;
+                        return;
+                    }
+
+                    //Check 4 from left top to right down
+                    for (int x = 0; x < 4; x++)
+                    {
+                        if (IsInField(j+x, i+x) && field[j+x, i+x] == owner)
+                            count++;
+                        else
+                        {
+                            count = 0;
+                            break;
+                        }
+                    }
+                    if (count == 4)
+                    {
+                        Debug.Log("4 in einer reihe left top-right down");
+                        winner = (Player)owner;
+                        return;
+                    }
+
+                    //Check 4 from right top to left down
+                    for (int x = 0; x < 4; x++)
+                    {
+                        if (IsInField(j + x, i - x) && field[j + x, i - x] == owner)
+                            count++;
+                        else
+                        {
+                            count = 0;
+                            break;
+                        }
+                    }
+                    if (count == 4)
+                    {
+                        Debug.Log("4 in einer reihe right top-left down");
+                        winner = (Player)owner;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private bool IsInField(int x, int y)
+    {
+        return x > -1 && y > -1 && x < col && y < row;
+    }
+
+    private bool HasEmptyCell()
+    {
+        for (int i = row - 1; i >= 0; i--)
+        {
+            for (int j = col - 1; j >= 0; j--)
+            {
+                if (field[j, i] == (int)Player.Empty){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}

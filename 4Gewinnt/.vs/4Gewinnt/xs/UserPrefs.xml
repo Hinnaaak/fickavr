@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{E96895EF-8484-27B1-8E22-0A37C89F6862}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Connect Four/scripts/GameController.cs">
+    <Files>
+      <File FileName="Assets/Connect Four/scripts/GameController.cs" Line="56" Column="38" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.4Gewinnt PreferredExecutionTarget="Unity.Editor" />
+  <MultiItemStartupConfigurations />
+</Properties>
