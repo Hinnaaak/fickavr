@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRTK;
 
 public class GameController : MonoBehaviour {
 
@@ -28,8 +29,12 @@ public class GameController : MonoBehaviour {
     public bool isLocked;
     public Player winner;
 
+    public bool blockMovingCoin = false;
+    
+
     // Use this for initialization
     void Start () {
+    
         field = new int[col, row];
         turn = Player.Red;
         winner = Player.Empty;
@@ -42,21 +47,24 @@ public class GameController : MonoBehaviour {
         {
             isLocked = true;
             Vector3 moveFor = new Vector3(0, 0, 0);
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && currentCoin.transform.position.z < 7.5)
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && currentCoin.transform.position.z < 1.2f && !blockMovingCoin )
             {
-                moveFor = new Vector3(0, 0, 2.5f);
+                moveFor = new Vector3(0, 0, 0.1f);
+                blockMovingCoin = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.RightArrow) && currentCoin.transform.position.z > -7.5)
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z > -1.2f && !blockMovingCoin)
             {
-                moveFor = new Vector3(0, 0, -2.5f);
+                moveFor = new Vector3(0, 0, -0.1f);
+                blockMovingCoin = true;
             }
             currentCoin.transform.position += moveFor;
-            //Input.GetKeyDown(KeyCode.DownArrow) || 
-            if (Input.GetButton("Fire1"))
-            {
-                DropCoin();
-            }
+            if (Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") == 0)
+                blockMovingCoin = false;
+            if (Input.GetButtonDown("Oculus_CrossPlatform_Button2"))
+             {
+                 DropCoin();
+             }
             isLocked = false;
         }
         else if(isDropping)
@@ -84,7 +92,7 @@ public class GameController : MonoBehaviour {
 
         GameObject g = Instantiate(
             turn == Player.Red ? redCoin : yellowCoin , // is players turn = spawn blue, else spawn red
-            new Vector3(0, 17, 0), // spawn it above the first row
+            new Vector3(0, 0.8f, 0), // spawn it above the first row
             Quaternion.Euler(new Vector3(0, 0, 90)));
         currentCoin = g;
     }
