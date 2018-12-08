@@ -30,7 +30,8 @@ public class GameController : MonoBehaviour {
     public Player winner;
 
     public bool blockMovingCoin = false;
-    
+
+    public string tag;
 
     // Use this for initialization
     void Start () {
@@ -47,15 +48,25 @@ public class GameController : MonoBehaviour {
         {
             isLocked = true;
             Vector3 moveFor = new Vector3(0, 0, 0);
+            Transform playerGlobal = GameObject.Find("PlayerController").transform;
+            Transform playerLocal = playerGlobal.Find("[VRTK_SDKManager]/SDKSetups/OculusVR/OVRCameraRig/TrackingSpace/CenterEyeAnchor");
+            Vector3 position = playerLocal.position;
+
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && currentCoin.transform.position.z < 1.2f && !blockMovingCoin )
             {
-                moveFor = new Vector3(0, 0, 0.1f);
+                if(position.x < 0.0f)
+                    moveFor = new Vector3(0, 0, 0.1f);
+                else
+                    moveFor = new Vector3(0, 0, -0.1f);
                 blockMovingCoin = true;
             }
 
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z > -1.2f && !blockMovingCoin)
             {
-                moveFor = new Vector3(0, 0, -0.1f);
+                if (position.x < 0.0f)
+                    moveFor = new Vector3(0, 0, -0.1f);
+                else
+                    moveFor = new Vector3(0, 0, 0.1f);
                 blockMovingCoin = true;
             }
             currentCoin.transform.position += moveFor;
@@ -69,20 +80,35 @@ public class GameController : MonoBehaviour {
         }
         else if(isDropping)
         {
-            Vector3 move = new Vector3(0, -0.75f, 0) * Time.deltaTime * speed;
-            if (currentCoin.transform.position.y > endPosition.y){
-                if((move + currentCoin.transform.position).y >= endPosition.y)
-                    currentCoin.transform.Translate(move, Space.World);
-                else
-                    currentCoin.transform.Translate(new Vector3(0, endPosition.y - currentCoin.transform.position.y, 0), Space.World);
-            }else{
+            if(currentCoin.transform.position.y < 1.5f)
+            {
                 isDropping = false;
                 turn = turn == Player.Red ? Player.Yellow : Player.Red;
-                CheckForWinner();
                 currentCoin = null;
-                if(winner == Player.Empty && HasEmptyCell())
+                CheckForWinner();
+                if (winner == Player.Empty && HasEmptyCell())
                     CreateNewCoin();
+                collision childScript = GameObject.FindWithTag(tag).transform.GetComponent<collision>();
+
+                childScript.unblockCollision();
+
+                Debug.Log("Next please");
             }
+
+            /*Vector3 move = new Vector3(0, -0.75f, 0) * Time.deltaTime * speed;
+    if (currentCoin.transform.position.y > endPosition.y){
+        if((move + currentCoin.transform.position).y >= endPosition.y)
+            currentCoin.transform.Translate(move, Space.World);
+        else
+            currentCoin.transform.Translate(new Vector3(0, endPosition.y - currentCoin.transform.position.y, 0), Space.World);
+    }else{
+        isDropping = false;
+        turn = turn == Player.Red ? Player.Yellow : Player.Red;
+        CheckForWinner();
+        currentCoin = null;
+        if(winner == Player.Empty && HasEmptyCell())
+            CreateNewCoin();
+    }*/
         }
 
     }
@@ -92,7 +118,7 @@ public class GameController : MonoBehaviour {
 
         GameObject g = Instantiate(
             turn == Player.Red ? redCoin : yellowCoin , // is players turn = spawn blue, else spawn red
-            new Vector3(0, 0.8f, 0), // spawn it above the first row
+            new Vector3(0, 2.02f, 0), // spawn it above the first row
             Quaternion.Euler(new Vector3(0, 0, 90)));
         currentCoin = g;
     }
@@ -102,29 +128,34 @@ public class GameController : MonoBehaviour {
     }
 
     private void DropCoin(){
-        isDropping = true;
+        /* isDropping = true;
 
-        Vector3 startPosition = currentCoin.transform.position;
-        endPosition = new Vector3(0, 1.5f, 0);
+         Vector3 startPosition = currentCoin.transform.position;
+         endPosition = new Vector3(0, 1.5f, 0);
 
-        // is there a free cell in the selected column?
-        bool foundFreeCell = false;
-        for (int i = row - 1; i >= 0; i--){
-            if (field[GetCol(), i] == 0){
-                foundFreeCell = true;
-                endPosition += new Vector3(0, 2.5f, 0)*(row -1- i);
-                field[GetCol(), i] = (int)turn;
-                break;
-            }
+         // is there a free cell in the selected column?
+         bool foundFreeCell = false;
+         for (int i = row - 1; i >= 0; i--){
+             if (field[GetCol(), i] == 0){
+                 foundFreeCell = true;
+                 endPosition += new Vector3(0, 2.5f, 0)*(row -1- i);
+                 field[GetCol(), i] = (int)turn;
+                 break;
+             }
 
-        }
-        if (foundFreeCell){
-            currentCoin.transform.Translate(Vector3.down * Time.deltaTime * speed, Space.World);
-        }else
-            isDropping = false;
+         }
+         if (foundFreeCell){
+             currentCoin.transform.Translate(Vector3.down * Time.deltaTime * speed, Space.World);
+         }else
+             isDropping = false;
+             */
+
+        currentCoin.GetComponent<Rigidbody>().isKinematic = false;
+        //currentCoin = null;
     }
 
     private void CheckForWinner(){
+        Debug.Log("Suche Nach Gewinner");
         for (int i = row - 1; i >= 0; i--){
             for (int j = col - 1; j >= 0; j-- ){
                 if(field[j,i] != (int)Player.Empty){
@@ -222,5 +253,37 @@ public class GameController : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public void CollisionFromChild(string col, string coin)
+    {
+        isDropping = true;
+        tag = col;
+        int collumn = 0;
+        if (col == "1")
+            collumn = 1;
+        else if (col == "2")
+            collumn = 2;
+        else if (col == "3")
+            collumn = 3;
+        else if (col == "4")
+            collumn = 4;
+        else if (col == "5")
+            collumn = 5;
+        else if (col == "6")
+            collumn = 6;
+        // is there a free cell in the selected column?
+        for (int i = row - 1; i >= 0; i--)
+        {
+            if (field[collumn, i] == 0)
+            {
+                endPosition += new Vector3(0, 2.5f, 0) * (row - 1 - i);
+                field[collumn, i] = (int)(coin == "redCoin(Clone)" ? Player.Red: Player.Yellow);
+                break;
+            }
+
+        }
+
+        Debug.Log("Child collision verarbeitet");
     }
 }

@@ -17,11 +17,13 @@ public class NetworkedPlayer : Photon.MonoBehaviour
         {
             Debug.Log("Player is mine");
 
-            playerGlobal = GameObject.Find("[CameraRig]").transform;
-            playerLocal = playerGlobal.Find("Camera (head)");
+            playerGlobal = GameObject.Find("PlayerController").transform;
+            playerLocal = playerGlobal.Find("[VRTK_SDKManager]/SDKSetups/OculusVR/OVRCameraRig/TrackingSpace/CenterEyeAnchor");
 
             this.transform.SetParent(playerLocal);
             this.transform.localPosition = Vector3.zero;
+
+            avatar.SetActive(false);
         }
     }
 

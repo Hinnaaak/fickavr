@@ -3,11 +3,12 @@ using System.Collections;
 
 public class NetworkController : MonoBehaviour
 {
-    string _room = "Tutorial_Convrge";
+    string _room = "3D_4Wins";
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings("0.1");
+        bool hi = PhotonNetwork.ConnectUsingSettings("0.1");
+        Debug.Log("connecting: " + hi);
     }
 
     void OnJoinedLobby()
@@ -20,6 +21,7 @@ public class NetworkController : MonoBehaviour
 
     void OnJoinedRoom()
     {
-        PhotonNetwork.Instantiate("NetworkedPlayer", Vector3.zero, Quaternion.identity, 0);
+        Debug.Log("joined Room");
+        PhotonNetwork.Instantiate("networkedPlayer", Vector3.zero, Quaternion.identity, 0);
     }
 }
