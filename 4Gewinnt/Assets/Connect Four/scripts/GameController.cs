@@ -52,22 +52,38 @@ public class GameController : MonoBehaviour {
             Transform playerLocal = playerGlobal.Find("[VRTK_SDKManager]/SDKSetups/OculusVR/OVRCameraRig/TrackingSpace/CenterEyeAnchor");
             Vector3 position = playerLocal.position;
 
-            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && currentCoin.transform.position.z < 1.2f && !blockMovingCoin )
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && !blockMovingCoin && currentCoin.transform.position.z < 0.75f && position.x < 0.0f)
             {
-                if(position.x < 0.0f)
-                    moveFor = new Vector3(0, 0, 0.1f);
-                else
-                    moveFor = new Vector3(0, 0, -0.1f);
-                blockMovingCoin = true;
+                //if(position.x < 0.0f)
+                    moveFor = new Vector3(0, 0, 0.01f);
+                //else
+                //    moveFor = new Vector3(0, 0, -0.01f);
+                //blockMovingCoin = true;
+            }
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && !blockMovingCoin && currentCoin.transform.position.z > -0.75f && position.x > 0.0f)
+            {
+                //if (position.x < 0.0f)
+               //
+               // else
+                    moveFor = new Vector3(0, 0, -0.01f);
+                //blockMovingCoin = true;
             }
 
-            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z > -1.2f && !blockMovingCoin)
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z > -0.75f && !blockMovingCoin && position.x < 0.0f)
             {
-                if (position.x < 0.0f)
-                    moveFor = new Vector3(0, 0, -0.1f);
-                else
-                    moveFor = new Vector3(0, 0, 0.1f);
-                blockMovingCoin = true;
+                //if (position.x < 0.0f)
+                    moveFor = new Vector3(0, 0, -0.01f);
+               // else
+                 //   moveFor = new Vector3(0, 0, 0.01f);
+                //blockMovingCoin = true;
+            }
+            if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z < 0.75f && !blockMovingCoin && position.x > 0.0f)
+            {
+               // if (position.x < 0.0f)
+                //    moveFor = new Vector3(0, 0, -0.01f);
+                //else
+                    moveFor = new Vector3(0, 0, 0.01f);
+                //blockMovingCoin = true;
             }
             currentCoin.transform.position += moveFor;
             if (Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") == 0)
@@ -117,7 +133,7 @@ public class GameController : MonoBehaviour {
         //Vector3 spawnPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         GameObject g = Instantiate(
-            turn == Player.Red ? redCoin : yellowCoin , // is players turn = spawn blue, else spawn red
+            turn == Player.Red ? redCoin : yellowCoin , // is players turn = spawn red, else spawn yellow
             new Vector3(0, 2.02f, 0), // spawn it above the first row
             Quaternion.Euler(new Vector3(0, 0, 90)));
         currentCoin = g;

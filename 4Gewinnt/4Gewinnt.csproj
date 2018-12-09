@@ -281,6 +281,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Connect Four\scripts\collision.cs" />
+    <Compile Include="Assets\Connect Four\scripts\DontGoThroughThings.cs" />
     <Compile Include="Assets\Connect Four\scripts\GameController.cs" />
     <Compile Include="Assets\Connect Four\scripts\NetworkController.cs" />
     <Compile Include="Assets\Connect Four\scripts\NetworkedPlayer.cs" />
