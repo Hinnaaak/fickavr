@@ -40,8 +40,9 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             stream.SendNext(playerLocal.localRotation);
             if (gamecontroller.isMyTurn())
             {
-                stream.SendNext(gamecontroller.getPlayerPosition());
+                Debug.Log("writing");
                 stream.SendNext(gamecontroller.getCoinPos());
+                stream.SendNext(gamecontroller.isDropping);
             }
          
         }
@@ -53,7 +54,13 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             avatar.transform.localRotation = (Quaternion)stream.ReceiveNext();
             if(stream.Count == 9)
             {
-                gamecontroller.coinMove((Vector3)stream.ReceiveNext(), (Vector3)stream.ReceiveNext());
+                Debug.Log("reading");
+                gamecontroller.coinMove((Vector3)stream.ReceiveNext());
+                if ((bool)stream.ReceiveNext())
+                {
+                    gamecontroller.isDropping = true;
+                    gamecontroller.DropCoin();
+                }
             }
         }
     }

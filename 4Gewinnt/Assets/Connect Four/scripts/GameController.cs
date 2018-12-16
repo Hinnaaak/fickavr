@@ -145,7 +145,7 @@ public class GameController : MonoBehaviour {
            return (int)Mathf.Floor(currentCoin.transform.position.z / -2.5f) + 3;
     }
 
-    private void DropCoin(){
+    public void DropCoin(){
         /* isDropping = true;
 
          Vector3 startPosition = currentCoin.transform.position;
@@ -191,8 +191,8 @@ public class GameController : MonoBehaviour {
                         }
                     }
                     if (count == 4){
-                        Debug.Log("4 in einer reihe down-top");
                         winner = (Player)owner;
+                        Debug.Log("4 in einer reihe down-top. Gewonnen hat Spieler: " + winner);
                         return;
                     }
 
@@ -209,8 +209,8 @@ public class GameController : MonoBehaviour {
                     }
                     if (count == 4)
                     {
-                        Debug.Log("4 in einer reihe right-left");
                         winner = (Player)owner;
+                        Debug.Log("4 in einer reihe right-left. Gewonnen hat Spieler: " + winner);
                         return;
                     }
 
@@ -227,8 +227,9 @@ public class GameController : MonoBehaviour {
                     }
                     if (count == 4)
                     {
-                        Debug.Log("4 in einer reihe left top-right down");
                         winner = (Player)owner;
+                        Debug.Log("4 in einer reihe left top-right down. Gewonnen hat Spieler: " + winner);
+
                         return;
                     }
 
@@ -245,8 +246,8 @@ public class GameController : MonoBehaviour {
                     }
                     if (count == 4)
                     {
-                        Debug.Log("4 in einer reihe right top-left down");
                         winner = (Player)owner;
+                        Debug.Log("4 in einer reihe right top-left down. Gewonnen hat Spieler: " + winner);
                         return;
                     }
                 }
@@ -325,7 +326,7 @@ public class GameController : MonoBehaviour {
         return this.turn == this.me;
     }
 
-    public void coinMove(Vector3 playerPos, Vector3 coinPos)
+    public void coinMove(Vector3 coinPos)
     {
         currentCoin.transform.position = coinPos;
     }
