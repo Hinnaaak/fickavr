@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour {
 
     public bool isDropping;
     public Player turn;
+    public Player me;
 
     public float speed = 30f;
 
@@ -44,7 +45,7 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (!isDropping && !isLocked && currentCoin != null)
+        if (!isDropping && !isLocked && currentCoin != null && isMyTurn())
         {
             isLocked = true;
             Vector3 moveFor = new Vector3(0, 0, 0);
@@ -55,7 +56,7 @@ public class GameController : MonoBehaviour {
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && !blockMovingCoin && currentCoin.transform.position.z < 0.75f && position.x < 0.0f)
             {
                 //if(position.x < 0.0f)
-                    moveFor = new Vector3(0, 0, 0.01f);
+                moveFor = new Vector3(0, 0, 0.01f);
                 //else
                 //    moveFor = new Vector3(0, 0, -0.01f);
                 //blockMovingCoin = true;
@@ -63,26 +64,27 @@ public class GameController : MonoBehaviour {
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") < 0) && !blockMovingCoin && currentCoin.transform.position.z > -0.75f && position.x > 0.0f)
             {
                 //if (position.x < 0.0f)
-               //
-               // else
-                    moveFor = new Vector3(0, 0, -0.01f);
+                //
+                // else
+                moveFor = new Vector3(0, 0, -0.01f);
                 //blockMovingCoin = true;
             }
 
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z > -0.75f && !blockMovingCoin && position.x < 0.0f)
             {
                 //if (position.x < 0.0f)
-                    moveFor = new Vector3(0, 0, -0.01f);
+                moveFor = new Vector3(0, 0, -0.01f);
                // else
                  //   moveFor = new Vector3(0, 0, 0.01f);
                 //blockMovingCoin = true;
             }
             if ((Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") > 0) && currentCoin.transform.position.z < 0.75f && !blockMovingCoin && position.x > 0.0f)
             {
-               // if (position.x < 0.0f)
+
+                // if (position.x < 0.0f)
                 //    moveFor = new Vector3(0, 0, -0.01f);
                 //else
-                    moveFor = new Vector3(0, 0, 0.01f);
+                moveFor = new Vector3(0, 0, 0.01f);
                 //blockMovingCoin = true;
             }
             currentCoin.transform.position += moveFor;
@@ -301,5 +303,30 @@ public class GameController : MonoBehaviour {
         }
 
         Debug.Log("Child collision verarbeitet");
+    }
+
+    public void setPlayer(int player)
+    {
+        switch (player){
+            case 1:
+                me = Player.Red;
+                break;
+            case 2:
+                me = Player.Yellow;
+                break;
+            default:
+                me = Player.Empty;
+                break;
+        }
+        Debug.Log("Ich bin: " + me);
+    }
+    public bool isMyTurn()
+    {
+        return this.turn == this.me;
+    }
+
+    public void coinMove(Vector3 pos, string move)
+    {
+       
     }
 }

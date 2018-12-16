@@ -5,8 +5,12 @@ public class NetworkController : MonoBehaviour
 {
     string _room = "3D_4Wins";
 
+    GameController gamecontroller;
+
     void Start()
     {
+        GameObject fourWins = GameObject.FindGameObjectWithTag("4wins");
+        this.gamecontroller = fourWins.GetComponent<GameController>();
         bool hi = PhotonNetwork.ConnectUsingSettings("0.1");
         Debug.Log("connecting: " + hi);
     }
@@ -22,6 +26,8 @@ public class NetworkController : MonoBehaviour
     void OnJoinedRoom()
     {
         Debug.Log("joined Room");
+        PhotonPlayer[] playerlist = PhotonNetwork.playerList;
+        gamecontroller.setPlayer(playerlist.Length);
         PhotonNetwork.Instantiate("networkedPlayer", Vector3.zero, Quaternion.identity, 0);
     }
 }

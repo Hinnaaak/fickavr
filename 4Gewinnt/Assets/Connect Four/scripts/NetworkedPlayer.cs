@@ -9,9 +9,13 @@ public class NetworkedPlayer : Photon.MonoBehaviour
     public Transform playerGlobal;
     public Transform playerLocal;
 
+    GameController gamecontroller;
+
     void Start()
     {
-        Debug.Log("Player instantiated");
+            GameObject fourWins = GameObject.FindGameObjectWithTag("4wins");
+            this.gamecontroller = fourWins.GetComponent<GameController>();
+            Debug.Log("Player instantiated");
 
         if (photonView.isMine)
         {
@@ -35,9 +39,15 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             stream.SendNext(playerGlobal.rotation);
             stream.SendNext(playerLocal.localPosition);
             stream.SendNext(playerLocal.localRotation);
+            if (gamecontroller.isMyTurn())
+            {
+
+            }
+         
         }
         else
         {
+            Debug.Log("count : " + stream.Count);
             this.transform.position = (Vector3)stream.ReceiveNext();
             this.transform.rotation = (Quaternion)stream.ReceiveNext();
             avatar.transform.localPosition = (Vector3)stream.ReceiveNext();
