@@ -8,8 +8,7 @@ public class NetworkedPlayer : Photon.MonoBehaviour
 
     public Transform playerGlobal;
     public Transform playerLocal;
-
-    GameController gamecontroller;
+    private GameController gamecontroller;
 
     void Start()
     {
