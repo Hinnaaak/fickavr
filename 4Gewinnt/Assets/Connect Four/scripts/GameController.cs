@@ -325,8 +325,21 @@ public class GameController : MonoBehaviour {
         return this.turn == this.me;
     }
 
-    public void coinMove(Vector3 pos, string move)
+    public void coinMove(Vector3 playerPos, Vector3 coinPos)
     {
-       
+        currentCoin.transform.position = coinPos;
+    }
+
+    public Vector3 getPlayerPosition()
+    {
+        Transform playerGlobal = GameObject.Find("PlayerController").transform;
+        Transform playerLocal = playerGlobal.Find("[VRTK_SDKManager]/SDKSetups/OculusVR/OVRCameraRig/TrackingSpace/CenterEyeAnchor");
+        return playerLocal.position;
+    }
+
+
+    public Vector3 getCoinPos()
+    {
+        return this.currentCoin.transform.position;
     }
 }

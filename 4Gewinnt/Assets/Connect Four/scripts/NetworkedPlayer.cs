@@ -40,17 +40,21 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             stream.SendNext(playerLocal.localRotation);
             if (gamecontroller.isMyTurn())
             {
-
+                stream.SendNext(gamecontroller.getPlayerPosition());
+                stream.SendNext(gamecontroller.getCoinPos());
             }
          
         }
         else
         {
-            Debug.Log("count : " + stream.Count);
             this.transform.position = (Vector3)stream.ReceiveNext();
             this.transform.rotation = (Quaternion)stream.ReceiveNext();
             avatar.transform.localPosition = (Vector3)stream.ReceiveNext();
             avatar.transform.localRotation = (Quaternion)stream.ReceiveNext();
+            if(stream.Count == 9)
+            {
+                gamecontroller.coinMove((Vector3)stream.ReceiveNext(), (Vector3)stream.ReceiveNext());
+            }
         }
     }
 }
