@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
@@ -33,18 +34,49 @@ public class GameController : MonoBehaviour {
     public bool blockMovingCoin = false;
 
     public string tag;
+    private string startText = "Willkommen beim Multiplayer-4-Gewinnt-Spiel" + Environment.NewLine;
+    private int count = 1;
+
+    public enum GameState
+    {
+        Start = 0,
+        Running = 1,
+        End = 2,
+        Restart = 3,
+        Closed = 4
+    }
+    public GameState gameState;
 
     // Use this for initialization
     void Start () {
-    
+        gameState = GameState.Running;
         field = new int[col, row];
         turn = Player.Red;
         winner = Player.Empty;
         CreateNewCoin();
+        //startText += me == Player.Red ? "Rot" : "Gelb";
+       // startText += Environment.NewLine + "Warte auf deinen Gegner";
+        GameObject.Find("GUITextOne").GetComponent<UnityEngine.UI.Text>().text = startText;
     }
 
     // Update is called once per frame
     void Update () {
+        if (gameState == GameState.Start)
+        {
+            if (count > 400)
+                count = 1;
+            if (count == 100 || count == 200 || count == 300 || count == 400)
+            {
+                string dots = "";
+                for (int i = 0; i < count / 100; i++)
+                    dots += ".";
+                GameObject.Find("GUITextOne").GetComponent<UnityEngine.UI.Text>().text = startText + Environment.NewLine + "Du bist der Spieler mit der Farbe " + (me == Player.Red ? "Rot" : "Gelb") + Environment.NewLine + "Warte auf deinen Gegner" + Environment.NewLine + dots;
+                GameObject.Find("GUITextOne").GetComponent<UnityEngine.UI.Text>().color = me == Player.Red ? Color.red : Color.yellow;
+            }
+            count++;
+        }
+        GameObject.Find("Plane").GetComponent<Renderer>().material.color = turn == Player.Red ? Color.red : Color.yellow;
+        
         if (!isDropping && !isLocked && currentCoin != null && isMyTurn())
         {
             isLocked = true;
@@ -145,7 +177,7 @@ public class GameController : MonoBehaviour {
            return (int)Mathf.Floor(currentCoin.transform.position.z / -2.5f) + 3;
     }
 
-    private void DropCoin(){
+    public void DropCoin(){
         /* isDropping = true;
 
          Vector3 startPosition = currentCoin.transform.position;
@@ -318,16 +350,16 @@ public class GameController : MonoBehaviour {
                 me = Player.Empty;
                 break;
         }
-        Debug.Log("Ich bin: " + me);
     }
     public bool isMyTurn()
     {
         return this.turn == this.me;
     }
 
-    public void coinMove(Vector3 playerPos, Vector3 coinPos)
+    public void coinMove(Vector3 coinPos)
     {
         currentCoin.transform.position = coinPos;
+        
     }
 
     public Vector3 getPlayerPosition()
@@ -340,6 +372,17 @@ public class GameController : MonoBehaviour {
 
     public Vector3 getCoinPos()
     {
-        return this.currentCoin.transform.position;
+        return currentCoin.transform.position;
     }
+
+    public GameState getGameState()
+    {
+        return gameState;
+    }
+
+    public void otherPlayersGameState(int state)
+    {
+        Debug.Log("Other player game state: " + state);
+    }
+
 }

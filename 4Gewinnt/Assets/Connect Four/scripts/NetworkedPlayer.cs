@@ -12,9 +12,9 @@ public class NetworkedPlayer : Photon.MonoBehaviour
 
     void Start()
     {
-            GameObject fourWins = GameObject.FindGameObjectWithTag("4wins");
-            this.gamecontroller = fourWins.GetComponent<GameController>();
-            Debug.Log("Player instantiated");
+        GameObject fourWins = GameObject.FindGameObjectWithTag("4wins");
+        this.gamecontroller = fourWins.GetComponent<GameController>();
+        Debug.Log("Player instantiated");
 
         if (photonView.isMine)
         {
@@ -38,10 +38,11 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             stream.SendNext(playerGlobal.rotation);
             stream.SendNext(playerLocal.localPosition);
             stream.SendNext(playerLocal.localRotation);
+            stream.SendNext(gamecontroller.getGameState());
             if (gamecontroller.isMyTurn())
             {
-                stream.SendNext(gamecontroller.getPlayerPosition());
                 stream.SendNext(gamecontroller.getCoinPos());
+                stream.SendNext(gamecontroller.isDropping);
             }
          
         }
@@ -51,9 +52,15 @@ public class NetworkedPlayer : Photon.MonoBehaviour
             this.transform.rotation = (Quaternion)stream.ReceiveNext();
             avatar.transform.localPosition = (Vector3)stream.ReceiveNext();
             avatar.transform.localRotation = (Quaternion)stream.ReceiveNext();
-            if(stream.Count == 9)
+            gamecontroller.otherPlayersGameState((int)stream.ReceiveNext());
+            if (stream.Count == 10)
             {
-                gamecontroller.coinMove((Vector3)stream.ReceiveNext(), (Vector3)stream.ReceiveNext());
+                gamecontroller.coinMove((Vector3)stream.ReceiveNext());
+                if ((bool)stream.ReceiveNext())
+                {
+                    gamecontroller.isDropping = true;
+                    gamecontroller.DropCoin();
+                }
             }
         }
     }

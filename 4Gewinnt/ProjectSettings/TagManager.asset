@@ -12,6 +12,7 @@ TagManager:
   - 5
   - 6
   - 4wins
+  - StartText
   layers:
   - Default
   - TransparentFX

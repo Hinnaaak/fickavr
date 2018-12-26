@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-C:/Users/student/Desktop/4wins/4Gewinnt/4Gewinnt.exe
+D:/Studenten/Horatio Caine/fickavr/4Gewinnt/4wins.exe
 SceneListBegin?
 Assets/Connect Four/scenes/game.unity
 SceneListEnd?
@@ -299,7 +299,7 @@ a0d210526e9d680526b8f98efeb9e08c Assembly-CSharp.dll:Valve.VR.InteractionSystem.
 1533b0517af2ff889ed11eb7a8934698 Assembly-CSharp.dll:Valve.VR.InteractionSystem.ComplexThrowable
 fd044a1720acfc095b3d34c48014e048 Oculus.VR.dll:.OVRPlatformMenu
 9daf8b11729f18722adccb9c0685772f Assembly-CSharp.dll:.OvrAvatarComponent
-61c546cec0751759172baf2068e4f0e9 Assembly-CSharp.dll:.GameController
+25226f439a378b29aabd4cd8eb0a6c14 Assembly-CSharp.dll:.GameController
 26215f135eeb48d8fa1189498c107f6c Vuforia.UnityExtensions.dll:Vuforia.AnchorBehaviour
 0561521e336e270e6e5a9c61387cb838 Vuforia.UnityExtensions.dll:Vuforia.AnchorInputListenerBehaviour
 2e0fd93f459db951da0e2e94e2e33fb7 Vuforia.UnityExtensions.dll:Vuforia.AnchorStageBehaviour
@@ -638,6 +638,7 @@ a7fb925992eaa6c7ad4ddffedadd1fb5 Assembly-CSharp.dll:VRTK.Examples.Gun
 6b7f3b627f03aa2dae54ad0ecb0a7d7a Assembly-CSharp.dll:.PhotonLagSimulationGui
 8e75c7ff572e377afe5aec0a3c77276b Assembly-CSharp.dll:.PickupCamera
 a7fb925992eaa6c7ad4ddffedadd1fb5 Assembly-CSharp.dll:VRTK.Examples.Menu_Container_Object_Colors
+c4d94b69f02b227446a57d2c4d6ec012 Assembly-CSharp.dll:.DontGoThroughThings
 e29eedec83444c5ff91ad08de30f1219 Assembly-CSharp.dll:.GUICustomAuth
 fd93c5d0bb95f99e632f4a74c7bd1570 Assembly-CSharp.dll:VRTK.VRTK_BezierPointerRenderer
 9fa7a9ab8069e0638c83e46317c17d33 Assembly-CSharp.dll:VRTK.VRTK_SDKSetupSwitcher
@@ -775,6 +776,7 @@ a7fb925992eaa6c7ad4ddffedadd1fb5 Assembly-CSharp.dll:VRTK.Examples.LightSaber
 efaacbc067f54d801b8ecfdac3af7084 Assembly-CSharp.dll:.OVRVoiceModContext
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ClickDetector
 72b15d35918a073c7019e79218d45456 Assembly-CSharp.dll:.SteamVR_Camera
+9512827781d47f7f96c69f149f0af3d4 Assembly-CSharp.dll:.collision
 26215f135eeb48d8fa1189498c107f6c Vuforia.UnityExtensions.dll:Vuforia.AnchorBehaviour
 0561521e336e270e6e5a9c61387cb838 Vuforia.UnityExtensions.dll:Vuforia.AnchorInputListenerBehaviour
 2e0fd93f459db951da0e2e94e2e33fb7 Vuforia.UnityExtensions.dll:Vuforia.AnchorStageBehaviour
